@@ -1,4 +1,4 @@
-# 🍽 MealTrack
+#  MealTrack
 
 Sistema full stack para gerenciamento de restaurantes, usuários, alimentos e produção.
 
@@ -49,19 +49,26 @@ git clone https://github.com/Vitordks/mealtrack.git
 CREATE DATABASE mealtrack;
 USE mealtrack;
 ```
-### 3. Inserir restaurante (OBRIGATÓRIO)
+### 3. Seed automático (DataLoader)
+O sistema já inicia com dados padrão automaticamente:
+
+- 1 restaurante base
+- 1 admin
+- 1 supervisor
+- 3 funcionários
+- alimentos padrão
+
+Isso permite testar o sistema sem cadastrar nada manualmente.
+
+### 4. Login padrão
+Após iniciar o backend:
+
+```bash
+Email: admin@mealtrack.com
+Senha: 123456
 ```
-INSERT INTO restaurante (nome, cnpj, email, telefone, endereco, data_fundacao)
-VALUES (
-    'Restaurante Teste',
-    '12.345.678/0001-99',
-    'teste@mealtrack.com',
-    '(71)99999-9999',
-    'Rua Central, 100',
-    '2020-01-01'
-);
-```
-### 4. Configurar backend
+
+### 5. Configurar backend
 ```
 spring.datasource.url=jdbc:mysql://localhost:3306/mealtrack
 spring.datasource.username=root
@@ -71,13 +78,13 @@ spring.jpa.hibernate.ddl-auto=none
 spring.jpa.show-sql=true
 ```
 
-### 5. Rodar backend
+### 6. Rodar backend
 ```
 cd mealtrack
 ./mvnw spring-boot:run
 ```
 
-### 6.Rodar frontend
+### 7.Rodar frontend
 ```
 cd Front/mealtrack-frontend
 npm install
@@ -87,6 +94,23 @@ npm run dev
 ### Login
 - Criar usuário pelo cadastro
 - Ou inserir direto no banco
+
+## Funcionalidades
+Funcionalidades
+- ✔Usuários
+Login
+Cadastro
+Edição
+Exclusão
+- ✔ Alimentos
+CRUD completo
+- ✔ Refeições
+Cadastro e listagem
+- ✔ Produção
+Registro de produção diária
+- ✔ Relatórios
+Controle de desperdício
+Economia gerada
 
 ## Equipe
 - João Vitor Moreira
