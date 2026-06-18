@@ -48,7 +48,9 @@ function Layout() {
                     <Route
                         path="/usuarios"
                         element={
-                            <RotaProtegida>
+                            <RotaProtegida
+                                nivelPermitido="ADMIN"
+                            >
                                 <Usuarios />
                             </RotaProtegida>
                         }

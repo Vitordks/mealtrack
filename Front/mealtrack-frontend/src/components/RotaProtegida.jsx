@@ -1,11 +1,27 @@
 import { Navigate } from "react-router-dom";
 
-function RotaProtegida({ children }) {
+function RotaProtegida({
 
-    const usuario = localStorage.getItem("usuario");
+                           children,
+                           nivelPermitido
 
-    if (!usuario) {
+                       }) {
+
+    const usuarioString =
+        localStorage.getItem("usuario");
+
+    if (!usuarioString) {
         return <Navigate to="/login" />;
+    }
+
+    const usuario =
+        JSON.parse(usuarioString);
+
+    if (
+        nivelPermitido &&
+        usuario.nivelAcesso !== nivelPermitido
+    ) {
+        return <Navigate to="/" />;
     }
 
     return children;

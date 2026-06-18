@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
 
 function Sidebar() {
-
+    const usuario = JSON.parse(
+        localStorage.getItem("usuario")
+    );
     return (
         <aside className="sidebar">
 
@@ -17,9 +19,15 @@ function Sidebar() {
                     Alimentos
                 </Link>
 
-                <Link to="/usuarios">
-                    Usuários
-                </Link>
+                {
+                    usuario?.nivelAcesso === "ADMIN" && (
+
+                        <Link to="/usuarios">
+                            Usuários
+                        </Link>
+
+                    )
+                }
 
                 <Link to="/producoes">
                     Produções
