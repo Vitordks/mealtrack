@@ -42,4 +42,9 @@ public class Usuario {
 
     @Column(name = "data_cadastro")
     private LocalDateTime dataCadastro;
+
+    @PrePersist
+    public void prePersist() {
+        this.dataCadastro = LocalDateTime.now();
+    }
 }

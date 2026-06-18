@@ -9,6 +9,7 @@ import Login from "./pages/Login.jsx";
 import RotaProtegida from "./components/RotaProtegida";
 import { useLocation } from "react-router-dom";
 import Relatorios from "./pages/Relatorios";
+import Cadastro from "./pages/Cadastro";
 import "./App.css";
 
 function Layout() {
@@ -74,6 +75,10 @@ function Layout() {
                     <Route
                         path="/login"
                         element={<Login />}
+                    />
+                    <Route
+                        path="/cadastro"
+                        element={<Cadastro />}
                     />
 
                 </Routes>

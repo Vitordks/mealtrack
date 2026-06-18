@@ -2,8 +2,10 @@ package com.mealtrack.controller;
 
 import com.mealtrack.model.Usuario;
 import com.mealtrack.repository.UsuarioRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -23,13 +25,17 @@ public class UsuarioController {
     }
 
     @PostMapping("/login")
-    public Usuario login(@RequestBody Usuario usuario) {
+    public ResponseEntity<?> login(@RequestBody Usuario usuario) {
 
         return repository.findByEmailAndSenha(
-                usuario.getEmail(),
-                usuario.getSenha()
-        ).orElseThrow();
-
+                        usuario.getEmail(),
+                        usuario.getSenha()
+                )
+                .<ResponseEntity<?>>map(ResponseEntity::ok)
+                .orElseGet(() ->
+                        ResponseEntity.status(401)
+                                .body("Email ou senha inválidos")
+                );
     }
 
     @GetMapping("/{id}")
@@ -46,6 +52,7 @@ public class UsuarioController {
         return repository.save(usuario);
 
     }
+
 
     @PutMapping("/{id}")
     public Usuario atualizar(

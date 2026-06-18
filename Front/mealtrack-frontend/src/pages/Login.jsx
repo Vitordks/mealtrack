@@ -45,7 +45,53 @@ function Login() {
 
     }
 
+
+
+    function Cadastro() {
+
+        const [nome, setNome] = useState("");
+        const [email, setEmail] = useState("");
+        const [senha, setSenha] = useState("");
+
+        const navigate = useNavigate();
+
+        function cadastrar() {
+
+            api.post("/usuarios", {
+                nome,
+                email,
+                senha,
+                documento: "12345678911",
+                nivelAcesso: "ADMIN",
+                restaurante: { id: 1 }
+            })
+                .then(() => {
+                    alert("Usuário criado!");
+                    navigate("/login");
+                });
+
+        }
+
+        return (
+            <div>
+                <h1>Cadastro</h1>
+
+                <input placeholder="Nome" onChange={(e) => setNome(e.target.value)} />
+                <input placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
+                <input placeholder="Senha" onChange={(e) => setSenha(e.target.value)} />
+
+                <button onClick={cadastrar}>
+                    Criar conta
+                </button>
+            </div>
+        );
+    }
+
+
+
     return (
+
+
         <div className="login-container">
 
             <div className="login-box">
@@ -72,6 +118,10 @@ function Login() {
 
                 <button onClick={fazerLogin}>
                     Entrar
+                </button>
+
+                <button onClick={() => navigate("/cadastro")}>
+                    Cadastrar-se
                 </button>
 
             </div>
