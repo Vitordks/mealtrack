@@ -60,13 +60,6 @@ O sistema já inicia com dados padrão automaticamente:
 
 Isso permite testar o sistema sem cadastrar nada manualmente.
 
-### 4. Login padrão
-Após iniciar o backend:
-
-```bash
-Email: admin@mealtrack.com
-Senha: 123456
-```
 
 ### 5. Configurar backend
 ```
@@ -91,9 +84,29 @@ npm install
 npm run dev
 ```
 
-### Login
-- Criar usuário pelo cadastro
-- Ou inserir direto no banco
+## Dados iniciais
+
+O sistema possui um DataLoader que cria automaticamente:
+
+- Restaurante padrão
+- Usuário administrador
+- Alimentos base
+- Refeições iniciais
+
+---
+
+##  Login padrão
+```git add .
+Email: admin@mealtrack.com  
+Senha: 123456
+```
+---
+
+##  Importante
+
+- MySQL deve estar rodando localmente
+- Backend deve iniciar antes do frontend
+- Java 17+ recomendado
 
 ## Funcionalidades
 Funcionalidades
