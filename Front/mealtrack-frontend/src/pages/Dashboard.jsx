@@ -1,253 +1,170 @@
 import { useEffect, useState } from "react";
-import api from "../services/api";
-import Card from "../components/Card";
-import { useNavigate } from "react-router-dom";
+import { Apple, Boxes, ClipboardList, Scale, Users } from "lucide-react";
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
+import { PageHeader } from "@/components/shared/PageHeader";
+import { StatCard } from "@/components/shared/StatCard";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { EmptyState } from "@/components/shared/EmptyState";
+import { ErrorState } from "@/components/shared/ErrorState";
+import * as dashboardService from "@/services/dashboardService";
+import * as producaoService from "@/services/producaoService";
+import { formatKg, formatNumber } from "@/utils/formatters";
 
-import {
-    BarChart,
-    Bar,
-    XAxis,
-    YAxis,
-    CartesianGrid,
-    Tooltip,
-    PieChart,
-    Pie,
-    Legend,
-    ResponsiveContainer
-} from "recharts";
-
-
-function Dashboard() {
-
-    const [dashboard, setDashboard] = useState(null);
-    const [producoes, setProducoes] = useState([]);
-    const navigate = useNavigate();
-    const [loading, setLoading] = useState(true);
-
-    const agrupado = {};
-
-    producoes.forEach((producao) => {
-
-        const nome = producao.alimento?.nome;
-
-        if (!agrupado[nome]) {
-            agrupado[nome] = 0;
-        }
-
-        agrupado[nome] += producao.quantidadeProduzida;
-
-    });
-
-    const dadosGrafico = Object.keys(agrupado).map(
-        (nome) => ({
-            nome,
-            quantidade: agrupado[nome]
-        })
-    );
-
-    useEffect(() => {
-        const usuario = localStorage.getItem("usuario");
-
-        if (!usuario) {
-            navigate("/login");
-            return;
-        }
-
-        Promise.all([
-            api.get("/dashboard"),
-            api.get("/producoes")
-        ])
-            .then(([dashRes, prodRes]) => {
-                setDashboard(dashRes.data);
-                setProducoes(prodRes.data);
-            })
-            .catch(console.log)
-            .finally(() => setLoading(false));
-
-    }, [navigate]);
-
-    if (loading) {
-        return (
-            <>
-                <h1>Dashboard</h1>
-                <h2>Carregando...</h2>
-            </>
-        );
-    }
-
-
-    return (
-        <>
-            <h1>Dashboard</h1>
-
-
-            <button
-                className="logout-btn"
-                onClick={() => {
-                    localStorage.removeItem("usuario");
-                    navigate("/login", {replace: true});
-                }}
-            >
-                Sair
-            </button>
-
-            <div className="cards">
-                <Card titulo="Alimentos"
-                      valor={dashboard?.totalAlimentos ?? 0}/>
-
-                <Card titulo="Usuários"
-                      valor={dashboard?.totalUsuarios ?? 0}/>
-
-                <Card titulo="Produções"
-                      valor={dashboard?.totalProducoes ?? 0}/>
-
-                <Card titulo="Quantidade Produzida"
-                      valor={dashboard?.quantidadeProduzida ?? 0}/>
-            </div>
-
-            <h2 style={{marginTop: "40px"}}>
-                Últimas Produções
-            </h2>
-
-            <table>
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Alimento</th>
-                    <th>Usuário</th>
-                    <th>Quantidade</th>
-                    <th>Data</th>
-                </tr>
-                </thead>
-
-                <tbody>
-                {producoes.map((producao) => (
-                    <tr key={producao.id}>
-                        <td>{producao.id}</td>
-                        <td>{producao.alimento?.nome}</td>
-                        <td>{producao.usuario?.nome}</td>
-                        <td>{producao.quantidadeProduzida}</td>
-                        <td>{producao.dataRegistro}</td>
-                    </tr>
-                ))}
-                </tbody>
-            </table>
-
-            <h2 style={{marginTop: "40px"}}>
-                Produção por Alimento
-            </h2>
-
-            <div
-                style={{
-                    background: "white",
-                    padding: "20px",
-                    borderRadius: "12px",
-                    marginTop: "20px"
-                }}
-            >
-                <ResponsiveContainer width="100%" height={300}>
-                    <BarChart
-                        data={dadosGrafico}
-                        margin={{
-                            top: 20,
-                            right: 30,
-                            left: 20,
-                            bottom: 5
-                        }}
-                    >
-                        <CartesianGrid strokeDasharray="3 3"/>
-
-                        <XAxis dataKey="nome"/>
-
-                        <YAxis/>
-
-                        <Tooltip/>
-
-                        <Bar
-                            dataKey="quantidade"
-                            fill="#F59E0B"
-                            radius={[8, 8, 0, 0]}
-                        />
-                    </BarChart>
-                </ResponsiveContainer>
-            </div>
-
-            <h2 style={{ marginTop: "40px" }}>
-                Ranking de Produção
-            </h2>
-
-            <table>
-                <thead>
-                <tr>
-                    <th>Alimento</th>
-                    <th>Total Produzido</th>
-                </tr>
-                </thead>
-
-                <tbody>
-
-                {dadosGrafico
-                    .sort(
-                        (a, b) =>
-                            b.quantidade - a.quantidade
-                    )
-                    .map((item) => (
-
-                        <tr key={item.nome}>
-                            <td>{item.nome}</td>
-                            <td>{item.quantidade}</td>
-                        </tr>
-
-                    ))}
-
-                </tbody>
-            </table>
-
-            <h2 style={{ marginTop: "40px" }}>
-                Participação na Produção
-            </h2>
-
-            <div
-                style={{
-                    background: "white",
-                    padding: "20px",
-                    borderRadius: "12px",
-                    marginTop: "20px",
-                    height: "400px"
-                }}
-            >
-
-                <ResponsiveContainer
-                    width="100%"
-                    height="100%"
-                >
-
-                    <PieChart>
-
-                        <Pie
-                            data={dadosGrafico}
-                            dataKey="quantidade"
-                            nameKey="nome"
-                            outerRadius={120}
-                            label
-                        />
-
-                        <Tooltip />
-
-                        <Legend />
-
-                    </PieChart>
-
-                </ResponsiveContainer>
-
-            </div>
-
-
-        </>
-
-
-    );
+/**
+ * Não existe endpoint de série histórica no backend — só o agregado de
+ * GET /dashboard. O gráfico de "produção por alimento" é derivado, no
+ * cliente, da lista real de GET /producoes (sem inventar dado nenhum).
+ */
+function buildProducaoPorAlimento(registros) {
+  const totals = new Map();
+  for (const registro of registros) {
+    const nome = registro.alimento?.nome ?? "Sem alimento";
+    totals.set(nome, (totals.get(nome) ?? 0) + (registro.quantidadeProduzida ?? 0));
+  }
+  return Array.from(totals, ([nome, total]) => ({ nome, total: Number(total.toFixed(2)) }))
+    .sort((a, b) => b.total - a.total)
+    .slice(0, 8);
 }
 
-export default Dashboard;
+export default function Dashboard() {
+  const [dashboard, setDashboard] = useState(null);
+  const [chartData, setChartData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  async function loadData() {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const [dashboardData, producoes] = await Promise.all([
+        dashboardService.obterDashboard(),
+        producaoService.listarProducoes(),
+      ]);
+      setDashboard(dashboardData);
+      setChartData(buildProducaoPorAlimento(producoes));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  if (error) {
+    return <ErrorState description={error} onRetry={loadData} />;
+  }
+
+  return (
+    <div className="flex flex-col gap-6">
+      <PageHeader
+        title="Dashboard"
+        description="Visão geral da produção e do cadastro do restaurante."
+      />
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <StatCard
+          label="Total de alimentos"
+          value={formatNumber(dashboard?.totalAlimentos)}
+          icon={Apple}
+          isLoading={isLoading}
+        />
+        <StatCard
+          label="Total de usuários"
+          value={formatNumber(dashboard?.totalUsuarios)}
+          icon={Users}
+          isLoading={isLoading}
+          accent="success"
+        />
+        <StatCard
+          label="Registros de produção"
+          value={formatNumber(dashboard?.totalProducoes)}
+          icon={ClipboardList}
+          isLoading={isLoading}
+          accent="warning"
+        />
+        <StatCard
+          label="Quantidade produzida"
+          value={formatKg(dashboard?.quantidadeProduzida)}
+          icon={Scale}
+          isLoading={isLoading}
+          hint={
+            dashboard?.mediaProduzida != null
+              ? `Média de ${formatKg(dashboard.mediaProduzida)} por registro`
+              : undefined
+          }
+        />
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle>Produção por alimento</CardTitle>
+            <CardDescription>Soma da quantidade produzida (kg), por alimento.</CardDescription>
+          </CardHeader>
+          <CardContent className="h-80">
+            {isLoading ? (
+              <div className="h-full animate-pulse rounded-md bg-muted" />
+            ) : chartData.length === 0 ? (
+              <EmptyState
+                title="Sem registros de produção"
+                description="Assim que a produção for registrada, o gráfico aparece aqui."
+              />
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={chartData} margin={{ left: -20 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+                  <XAxis
+                    dataKey="nome"
+                    tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }}
+                    tickLine={false}
+                    axisLine={{ stroke: "hsl(var(--border))" }}
+                  />
+                  <YAxis
+                    tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }}
+                    tickLine={false}
+                    axisLine={false}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      background: "hsl(var(--popover))",
+                      border: "1px solid hsl(var(--border))",
+                      borderRadius: "var(--radius)",
+                      color: "hsl(var(--popover-foreground))",
+                      fontSize: 13,
+                    }}
+                    formatter={(value) => [`${value} kg`, "Produzido"]}
+                  />
+                  <Bar dataKey="total" fill="hsl(var(--chart-1))" radius={[6, 6, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Alimento mais produzido</CardTitle>
+            <CardDescription>Segundo o total histórico de registros.</CardDescription>
+          </CardHeader>
+          <CardContent className="flex h-full items-center">
+            <div className="flex items-center gap-3">
+              <div className="flex size-11 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <Boxes className="size-5" />
+              </div>
+              <div>
+                <p className="text-lg font-semibold text-foreground">
+                  {dashboard?.alimentoMaisProduzido ?? "—"}
+                </p>
+                <p className="text-sm text-muted-foreground">Alimento líder de produção</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}

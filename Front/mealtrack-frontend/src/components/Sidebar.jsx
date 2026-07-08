@@ -33,6 +33,10 @@ function Sidebar() {
                     Produções
                 </Link>
 
+                <Link to="/monitoramento">
+                    Monitoramento
+                </Link>
+
                     <Link to="/relatorios">
                         Relatórios
                     </Link>

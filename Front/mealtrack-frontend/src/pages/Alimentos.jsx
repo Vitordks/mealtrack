@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
+import { toast } from "react-toastify";
 
 function Alimentos() {
 
@@ -15,16 +16,24 @@ function Alimentos() {
 
         api.get("/alimentos")
             .then((response) => {
+
                 setAlimentos(response.data);
+
             })
             .catch((error) => {
-                console.log(error);
+
+                console.error(error);
+
+                toast.error("Erro ao carregar alimentos.");
+
             });
 
     }
 
     useEffect(() => {
+
         carregarAlimentos();
+
     }, []);
 
     function prepararEdicao(alimento) {
@@ -37,12 +46,23 @@ function Alimentos() {
 
     function atualizarAlimento() {
 
+        if (!nome || !categoria) {
+
+            toast.warning("Preencha todos os campos.");
+
+            return;
+
+        }
+
         const alimentoAtualizado = {
+
             nome,
             categoria
+
         };
 
         api.put(`/alimentos/${idEdicao}`, alimentoAtualizado)
+
             .then(() => {
 
                 setIdEdicao(null);
@@ -51,23 +71,39 @@ function Alimentos() {
 
                 carregarAlimentos();
 
+                toast.success("Alimento atualizado com sucesso!");
+
             })
+
             .catch((error) => {
-                console.log(error);
+
+                console.error(error);
+
+                toast.error("Erro ao atualizar o alimento.");
+
             });
 
     }
 
     function cadastrarAlimento() {
 
+        if (!nome || !categoria) {
+
+            toast.warning("Preencha todos os campos.");
+
+            return;
+
+        }
+
         const novoAlimento = {
+
             nome,
             categoria
+
         };
 
-
-
         api.post("/alimentos", novoAlimento)
+
             .then(() => {
 
                 setNome("");
@@ -75,26 +111,54 @@ function Alimentos() {
 
                 carregarAlimentos();
 
+                toast.success("Alimento cadastrado com sucesso!");
+
             })
+
             .catch((error) => {
-                console.log(error);
+
+                console.error(error);
+
+                toast.error("Erro ao cadastrar o alimento.");
+
             });
 
     }
+
     function excluirAlimento(id) {
 
+        const confirmar = window.confirm(
+            "Deseja realmente excluir este alimento?"
+        );
+
+        if (!confirmar) {
+
+            return;
+
+        }
+
         api.delete(`/alimentos/${id}`)
+
             .then(() => {
+
                 carregarAlimentos();
+
+                toast.success("Alimento excluído com sucesso!");
+
             })
+
             .catch((error) => {
-                console.log(error);
+
+                console.error(error);
+
+                toast.error("Erro ao excluir o alimento.");
+
             });
 
     }
 
-
     return (
+
         <div>
 
             <h1>Gestão de Alimentos</h1>
@@ -116,19 +180,31 @@ function Alimentos() {
                 />
 
                 {
-                    idEdicao === null ? (
 
-                        <button onClick={cadastrarAlimento}>
-                            Cadastrar
-                        </button>
+                    idEdicao === null ?
 
-                    ) : (
+                        (
 
-                        <button onClick={atualizarAlimento}>
-                            Atualizar
-                        </button>
+                            <button onClick={cadastrarAlimento}>
 
-                    )
+                                Cadastrar
+
+                            </button>
+
+                        )
+
+                        :
+
+                        (
+
+                            <button onClick={atualizarAlimento}>
+
+                                Atualizar
+
+                            </button>
+
+                        )
+
                 }
 
             </div>
@@ -136,52 +212,76 @@ function Alimentos() {
             <table>
 
                 <thead>
+
                 <tr>
+
                     <th>ID</th>
+
                     <th>Nome</th>
+
                     <th>Categoria</th>
+
                     <th>Ações</th>
+
                 </tr>
+
                 </thead>
 
                 <tbody>
 
-                {alimentos.map((alimento) => (
+                {
 
-                    <tr key={alimento.id}>
+                    alimentos.map((alimento) => (
 
-                        <td>{alimento.id}</td>
+                        <tr key={alimento.id}>
 
-                        <td>{alimento.nome}</td>
+                            <td>{alimento.id}</td>
 
-                        <td>{alimento.categoria}</td>
+                            <td>{alimento.nome}</td>
 
-                        <td>
+                            <td>{alimento.categoria}</td>
 
-                            <button
-                                onClick={() => prepararEdicao(alimento)}
-                            >
-                                Editar
-                            </button>
+                            <td>
 
-                            <button
-                                onClick={() => excluirAlimento(alimento.id)}
-                            >
-                                Excluir
-                            </button>
+                                <button
 
-                        </td>
+                                    className="botao-editar"
 
-                    </tr>
+                                    onClick={() => prepararEdicao(alimento)}
 
-                ))}
+                                >
+
+                                    ✏ Editar
+
+                                </button>
+
+                                <button
+
+                                    className="botao-excluir"
+
+                                    onClick={() => excluirAlimento(alimento.id)}
+
+                                >
+
+                                    🗑 Excluir
+
+                                </button>
+                            </td>
+
+                        </tr>
+
+                    ))
+
+                }
 
                 </tbody>
 
             </table>
 
         </div>
+
     );
+
 }
 
 export default Alimentos;
