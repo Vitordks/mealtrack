@@ -83,13 +83,10 @@
  * @property {number} id
  * @property {string} nome
  * @property {string} categoria
- */
-
-/**
- * @typedef {Object} Refeicao
- * @property {number} id
- * @property {string} nome
- * @property {number} valor
+ * @property {number} quantidadeInicialKg
+ * @property {number} quantidadeAtualKg
+ * @property {number} quantidadeDesperdicadoKg
+ * @property {number} valorPorQuilograma
  */
 
 export {};

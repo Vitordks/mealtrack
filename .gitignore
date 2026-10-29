@@ -5,3 +5,18 @@ target/
 node_modules/
 dist/
 .env
+
+# Configurações locais
+.devin/
+.env
+.env.*
+!.env.example
+
+# Dependências e arquivos gerados
+node_modules/
+dist/
+target/
+
+# Relatórios e resultados de testes
+playwright-report/
+test-results/

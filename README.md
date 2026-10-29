@@ -1,131 +1,115 @@
-#  MealTrack
+# MealTrack
 
-Sistema full stack para gerenciamento de restaurantes, usuários, alimentos e produção.
+Sistema full stack para monitoramento de desperdício de alimentos em restaurantes — MVP pronto para apresentação de banca.
 
 ---
 
-##  Sobre o projeto
+## Sobre o projeto
 
-O MealTrack é uma aplicação para controle de processos internos de restaurantes, permitindo:
+O MealTrack simula um sistema real de controle operacional de buffet, com dados persistentes no banco. A arquitetura está preparada para futura integração com sensores Arduino.
 
-- Cadastro de usuários
-- Login
-- Cadastro de alimentos
+Funcionalidades principais:
+
+- Cadastro de usuários, restaurantes e alimentos
 - Registro de produção
-- Controle de refeições
-- Relatórios e desperdício
+- Central de monitoramento operacional
+- Dashboard gerencial com gráficos
+- Relatórios de desperdício e eficiência
+- Simulação semanal com alteração real dos dados
 
 ---
 
-##  Tecnologias
+## Tecnologias
 
-### Frontend
-- React
-- Vite
-- Axios
-- React Router
-
-### Backend
-- Java 24
-- Spring Boot
-- Spring Data JPA
-
-### Banco de dados
-- MySQL
+| Camada | Stack |
+|--------|-------|
+| Frontend | React, Vite, Tailwind, Recharts |
+| Backend | Java, Spring Boot, Spring Data JPA |
+| Banco | MySQL |
+| Segurança | JWT |
 
 ---
 
-##  Como rodar o projeto
+## Como rodar
 
-### 1. Clonar o projeto
+### 1. Banco de dados
 
-```bash
-git clone https://github.com/Vitordks/mealtrack.git
-```
-
-### 2. Criar banco de dados
-
-```bash
+```sql
 CREATE DATABASE mealtrack;
-USE mealtrack;
-```
-### 3. Seed automático (DataLoader)
-O sistema já inicia com dados padrão automaticamente:
-
-- 1 restaurante base
-- 1 admin
-- 1 supervisor
-- 3 funcionários
-- alimentos padrão
-
-Isso permite testar o sistema sem cadastrar nada manualmente.
-
-
-### 5. Configurar backend
-```
-spring.datasource.url=jdbc:mysql://localhost:3306/mealtrack
-spring.datasource.username=root
-spring.datasource.password=SUA_SENHA
-
-spring.jpa.hibernate.ddl-auto=none
-spring.jpa.show-sql=true
 ```
 
-### 6. Rodar backend
-```
+### 2. Backend
+
+Configure `mealtrack/src/main/resources/application.properties` com sua senha MySQL.
+
+```bash
 cd mealtrack
 ./mvnw spring-boot:run
 ```
 
-### 7.Rodar frontend
-```
+O backend inicia na porta **9090**.
+
+### 3. Frontend
+
+```bash
 cd Front/mealtrack-frontend
 npm install
 npm run dev
 ```
 
-## Dados iniciais
+---
 
-O sistema possui um DataLoader que cria automaticamente:
+## Dados iniciais (seed automático)
 
-- Restaurante padrão
-- Usuário administrador
-- Alimentos base
-- Refeições iniciais
+Na primeira execução, o sistema carrega automaticamente:
+
+| Recurso | Quantidade |
+|---------|------------|
+| Restaurante | 1 (dados completos) |
+| Usuários | 13 (admin, supervisor, 11 funcionários) |
+| Alimentos | 25 (valores variados) |
+| Produções | ~200 registros (14 dias) |
+| Eventos | 12 eventos históricos |
+
+### Login padrão
+
+| Campo | Valor |
+|-------|-------|
+| Email | `admin@mealtrack.com` |
+| Senha | `123456` |
+
+Outros usuários usam a mesma senha (`123456`).
 
 ---
 
-##  Login padrão
-```git add .
-Email: admin@mealtrack.com  
-Senha: 123456
+## Simulação semanal
+
+Na página **Simulação**, clique em **Executar Simulação**. O sistema evolui 7 dias de operação de forma real:
+
+- Funcionários produzem alimentos
+- Clientes consomem
+- Reposições acontecem
+- Sobras são descartadas (única fonte de desperdício)
+- Eventos são registrados no histórico
+
+Após a simulação, Dashboard, Monitoramento, Alimentos e Relatórios refletem os novos dados.
+
+---
+
+## Regra de desperdício
+
 ```
+Produção → Consumo → Reposições → Quantidade restante → Descarte = Desperdício
+```
+
+**Exemplo:** 50 kg produzidos, 44 kg consumidos, 6 kg restantes, 2 kg descartados → **Desperdício = 2 kg** → **Eficiência = 96%**
+
+O que resta na bandeja **não** é desperdício. Apenas a sobra descartada conta.
+
 ---
-
-##  Importante
-
-- MySQL deve estar rodando localmente
-- Backend deve iniciar antes do frontend
-- Java 17+ recomendado
-
-## Funcionalidades
-Funcionalidades
-- ✔Usuários
-Login
-Cadastro
-Edição
-Exclusão
-- ✔ Alimentos
-CRUD completo
-- ✔ Refeições
-Cadastro e listagem
-- ✔ Produção
-Registro de produção diária
-- ✔ Relatórios
-Controle de desperdício
-Economia gerada
 
 ## Equipe
+
 - João Vitor Moreira
 - João Vitor Sampaio
 - Esdras

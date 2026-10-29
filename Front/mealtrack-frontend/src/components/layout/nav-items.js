@@ -6,6 +6,7 @@ import {
   Soup,
   Store,
   Users,
+  Clock3,
 } from "lucide-react";
 
 /**
@@ -18,7 +19,8 @@ export const NAV_ITEMS = [
   { to: "/producao", label: "Produção", icon: ClipboardList },
   { to: "/relatorios", label: "Relatórios", icon: BarChart3, roles: ["ADMIN", "SUPERVISOR"] },
   { to: "/alimentos", label: "Alimentos", icon: Apple, roles: ["ADMIN", "SUPERVISOR"] },
-  { to: "/refeicoes", label: "Refeições", icon: Soup, roles: ["ADMIN", "SUPERVISOR"] },
+  { to: "/monitoramento", label: "Monitoramento", icon: Soup, roles: undefined },
+  { to: "/simulacao", label: "Simulação", icon: Clock3, roles: undefined },
   { to: "/usuarios", label: "Usuários", icon: Users, roles: ["ADMIN"] },
   { to: "/restaurantes", label: "Restaurantes", icon: Store, roles: ["ADMIN"] },
 ];

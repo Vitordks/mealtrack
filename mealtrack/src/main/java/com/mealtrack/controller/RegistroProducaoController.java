@@ -1,59 +1,58 @@
 package com.mealtrack.controller;
 
 import com.mealtrack.model.RegistroProducao;
-import com.mealtrack.repository.RegistroProducaoRepository;
+import com.mealtrack.service.RegistroProducaoService;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
 @RequestMapping("/producoes")
-@CrossOrigin(origins = "http://localhost:5173")
 public class RegistroProducaoController {
-    @GetMapping("/relatorio-periodo")
-    public List<RegistroProducao> relatorioPeriodo(
 
-            @RequestParam String dataInicial,
-            @RequestParam String dataFinal
+    private final RegistroProducaoService service;
 
-    ) {
+    public RegistroProducaoController(RegistroProducaoService service) {
 
-        return repository.findByDataRegistroBetween(
+        this.service = service;
 
-                LocalDateTime.parse(
-                        dataInicial + "T00:00:00"
-                ),
-
-                LocalDateTime.parse(
-                        dataFinal + "T23:59:59"
-                )
-
-        );
-    }
-    private final RegistroProducaoRepository repository;
-
-    public RegistroProducaoController(RegistroProducaoRepository repository) {
-        this.repository = repository;
     }
 
     @GetMapping
     public List<RegistroProducao> listarTodos() {
-        return repository.findAll();
+
+        return service.listarTodos();
+
     }
 
+    @GetMapping("/{id}")
+    public RegistroProducao buscarPorId(@PathVariable Integer id) {
 
-    @GetMapping("/relatorio")
-    public List<RegistroProducao> relatorio() {
-        return repository.findAll();
+        return service.buscarPorId(id);
+
     }
 
     @PostMapping
-    public RegistroProducao salvar(
-            @RequestBody RegistroProducao producao) {
+    public RegistroProducao salvar(@RequestBody RegistroProducao registro) {
 
-        producao.setDataRegistro(LocalDateTime.now());
+        return service.salvar(registro);
 
-        return repository.save(producao);
     }
+
+    @PutMapping("/{id}")
+    public RegistroProducao atualizar(
+            @PathVariable Integer id,
+            @RequestBody RegistroProducao registro) {
+
+        return service.atualizar(id, registro);
+
+    }
+
+    @DeleteMapping("/{id}")
+    public void excluir(@PathVariable Integer id) {
+
+        service.excluir(id);
+
+    }
+
 }

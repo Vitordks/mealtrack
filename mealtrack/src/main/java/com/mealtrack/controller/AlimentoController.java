@@ -1,55 +1,57 @@
 package com.mealtrack.controller;
 
 import com.mealtrack.model.Alimento;
-import com.mealtrack.repository.AlimentoRepository;
 import org.springframework.web.bind.annotation.*;
-
+import com.mealtrack.service.AlimentoService;
 import java.util.List;
 
 @RestController
 @RequestMapping("/alimentos")
-@CrossOrigin(origins = "http://localhost:5173")
 public class AlimentoController {
 
-    private final AlimentoRepository repository;
+    private final AlimentoService service;
 
-    public AlimentoController(AlimentoRepository repository) {
-        this.repository = repository;
-    }
+    public AlimentoController(AlimentoService service) {
 
-    @PostMapping
-    public Alimento cadastrar(@RequestBody Alimento alimento) {
-
-        return repository.save(alimento);
+        this.service = service;
 
     }
 
     @GetMapping
     public List<Alimento> listarTodos() {
-        return repository.findAll();
+
+        return service.listarTodos();
+
     }
+
     @GetMapping("/{id}")
     public Alimento buscarPorId(@PathVariable Integer id) {
-        return repository.findById(id)
-                .orElseThrow();
+
+        return service.buscarPorId(id);
+
     }
+
+    @PostMapping
+    public Alimento salvar(@RequestBody Alimento alimento) {
+
+        return service.salvar(alimento);
+
+    }
+
     @PutMapping("/{id}")
     public Alimento atualizar(
             @PathVariable Integer id,
-            @RequestBody Alimento alimentoAtualizado) {
+            @RequestBody Alimento alimento) {
 
-        Alimento alimento = repository.findById(id)
-                .orElseThrow();
+        return service.atualizar(id, alimento);
 
-        alimento.setNome(alimentoAtualizado.getNome());
-        alimento.setCategoria(alimentoAtualizado.getCategoria());
-
-        return repository.save(alimento);
     }
+
     @DeleteMapping("/{id}")
     public void excluir(@PathVariable Integer id) {
 
-        repository.deleteById(id);
+        service.excluir(id);
 
     }
+
 }

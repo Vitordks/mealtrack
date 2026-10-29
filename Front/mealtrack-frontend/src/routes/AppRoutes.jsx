@@ -11,7 +11,8 @@ import NotFound from "@/pages/NotFound";
 import UsuariosPage from "@/pages/usuarios/UsuariosPage";
 import RestaurantesPage from "@/pages/restaurantes/RestaurantesPage";
 import AlimentosPage from "@/pages/alimentos/AlimentosPage";
-import RefeicoesPage from "@/pages/refeicoes/RefeicoesPage";
+import Monitoramento from "@/pages/Monitoramento";
+import Simulacao from "@/pages/Simulacao";
 import ProducaoPage from "@/pages/producao/ProducaoPage";
 import RelatoriosPage from "@/pages/relatorios/RelatoriosPage";
 
@@ -47,14 +48,8 @@ export function AppRoutes() {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/refeicoes"
-          element={
-            <ProtectedRoute roles={["ADMIN", "SUPERVISOR"]}>
-              <RefeicoesPage />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/monitoramento" element={<Monitoramento />} />
+        <Route path="/simulacao" element={<Simulacao />} />
         <Route
           path="/usuarios"
           element={

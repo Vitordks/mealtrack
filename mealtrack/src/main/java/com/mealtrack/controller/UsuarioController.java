@@ -1,83 +1,71 @@
 package com.mealtrack.controller;
 
+import com.mealtrack.dto.usuario.LoginRequest;
+import com.mealtrack.dto.usuario.UsuarioRequest;
+import com.mealtrack.dto.usuario.UsuarioResponse;
 import com.mealtrack.model.Usuario;
-import com.mealtrack.repository.UsuarioRepository;
+
+import com.mealtrack.security.service.AuthService;
+import com.mealtrack.service.UsuarioService;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
 @RequestMapping("/usuarios")
-@CrossOrigin(origins = "http://localhost:5173")
 public class UsuarioController {
 
-    private final UsuarioRepository repository;
+    private final AuthService authService;
+    private final UsuarioService service;
 
-    public UsuarioController(UsuarioRepository repository) {
-        this.repository = repository;
+    public UsuarioController(
+            AuthService authService,
+            UsuarioService service
+    ) {
+        this.authService = authService;
+        this.service = service;
     }
 
     @GetMapping
-    public List<Usuario> listarTodos() {
-        return repository.findAll();
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Usuario usuario) {
-
-        return repository.findByEmailAndSenha(
-                        usuario.getEmail(),
-                        usuario.getSenha()
-                )
-                .<ResponseEntity<?>>map(ResponseEntity::ok)
-                .orElseGet(() ->
-                        ResponseEntity.status(401)
-                                .body("Email ou senha inválidos")
-                );
+    public List<UsuarioResponse> listarTodos() {
+        return service.listarTodos();
     }
 
     @GetMapping("/{id}")
-    public Usuario buscarPorId(@PathVariable Integer id) {
+    public UsuarioResponse buscarPorId(@PathVariable Integer id) {
+        return service.buscarPorId(id);
+    }
 
-        return repository.findById(id)
-                .orElseThrow();
+    @PostMapping("/login")
+    public ResponseEntity<?> login(
+            @RequestBody LoginRequest request
+    ) {
+
+        return authService.login(request);
 
     }
 
     @PostMapping
-    public Usuario salvar(@RequestBody Usuario usuario) {
+    public UsuarioResponse salvar(
+            @RequestBody UsuarioRequest request
+    ) {
 
-        return repository.save(usuario);
+        return service.salvar(request);
 
     }
 
-
     @PutMapping("/{id}")
-    public Usuario atualizar(
+    public UsuarioResponse atualizar(
             @PathVariable Integer id,
-            @RequestBody Usuario usuarioAtualizado) {
-
-        Usuario usuario = repository.findById(id)
-                .orElseThrow();
-
-        usuario.setNome(usuarioAtualizado.getNome());
-        usuario.setEmail(usuarioAtualizado.getEmail());
-        usuario.setSenha(usuarioAtualizado.getSenha());
-        usuario.setDocumento(usuarioAtualizado.getDocumento());
-        usuario.setTipoPessoa(usuarioAtualizado.getTipoPessoa());
-        usuario.setNivelAcesso(usuarioAtualizado.getNivelAcesso());
-        usuario.setRestaurante(usuarioAtualizado.getRestaurante());
-
-        return repository.save(usuario);
-
+            @RequestBody Usuario usuarioAtualizado
+    ) {
+        return service.atualizar(id, usuarioAtualizado);
     }
 
     @DeleteMapping("/{id}")
     public void excluir(@PathVariable Integer id) {
-
-        repository.deleteById(id);
-
+        service.excluir(id);
     }
 }

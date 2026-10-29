@@ -1,6 +1,6 @@
 # MealTrack — Frontend
 
-Frontend do sistema MealTrack. Consome a API REST existente (Spring Boot, `http://localhost:8080`) sem nenhuma alteração de contrato, endpoints, DTOs ou regras de negócio.
+Frontend do sistema MealTrack. Consome a API REST existente (Spring Boot, `http://localhost:9090`) sem nenhuma alteração de contrato, endpoints, DTOs ou regras de negócio.
 
 ## Stack
 
@@ -15,11 +15,11 @@ Frontend do sistema MealTrack. Consome a API REST existente (Spring Boot, `http:
 
 ```bash
 npm install
-cp .env.example .env.local   # ajuste VITE_API_URL se o backend não estiver em localhost:8080
+cp .env.example .env.local   # ajuste VITE_API_URL se o backend não estiver em localhost:9090
 npm run dev
 ```
 
-O backend precisa estar rodando e aceitando CORS de `http://localhost:5173` (já configurado nos `@CrossOrigin` dos controllers).
+O frontend sobe em `http://localhost:9091`. O backend precisa estar rodando em `http://localhost:9090` e aceitando CORS de `http://localhost:9091`.
 
 ## Estrutura de pastas
 
@@ -39,7 +39,7 @@ src/
   layouts/             AuthLayout (tela de login) e AppLayout (sidebar + header + conteúdo)
   lib/                 utils.js — helper `cn` (clsx + tailwind-merge)
   pages/               Uma pasta por módulo: usuarios, restaurantes, alimentos,
-                        refeicoes, producao — mais Dashboard, Login, Perfil, NotFound
+                        producao — mais Monitoramento, Dashboard, Login, Perfil, NotFound
   routes/              AppRoutes (definição de rotas) e ProtectedRoute (auth + roles)
   services/            Um arquivo por recurso da API, todos usando a mesma instância Axios
   types/               Typedefs JSDoc com o formato exato de cada entidade da API
